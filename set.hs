@@ -69,7 +69,7 @@ all' :: Set -> (Int -> Bool) -> Bool
 all' set predicat = intersect set predicat == predicat
 
 any' :: Set -> (Int -> Bool) -> Bool
-any' set predicat = intersect set predicat /= voidSet
+any' set predicat = intersect set predicat /= emptySet
 
 --Very long
 map' :: Set -> (Int -> Int) -> Set
