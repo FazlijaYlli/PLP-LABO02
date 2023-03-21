@@ -22,6 +22,7 @@ instance Eq Set where
             | s1 x == s2 x = check (x+1)
             | otherwise = True
 
+--Displays a set as an understandable and clean text
 instance Show Set where
     show set = "{" ++ show' (-bound) set False False False ++ "}" where
         show' x set previous isSingle remember
@@ -43,8 +44,8 @@ instance Show Set where
         | sub x = main x && check (x+1)
         | otherwise = check (x+1)
 
-voidSet::Set
-voidSet x = False
+emptySet::Set
+emptySet x = False
 
 elem' :: Set -> Int -> Bool
 elem' set = set
