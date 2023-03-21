@@ -1,32 +1,82 @@
 {- 
     DEVOIR 2
     Auteurs : Ylli Fazlija, Rui Mota Carneiro
-    Date : 14.03.23
+    Date : 21.03.23
     Description : Programme Haskell fournissant diverses fonctions servant d'ensembles.
 -}
 
 bound :: Int
 bound = 1000
 
-type Set = a -> Bool | a <- [1..10]
+type Set = Int -> Bool
 
+instance Eq Set where
+    (==) s1 s2 = check (-bound) where
+        check x
+            | x == bound + 1 = True
+            | s1 x == s2 x = check (x+1)
+            | otherwise = False
+    (/=) s1 s2 = check (-bound) where
+        check x
+            | x == bound + 1 = False
+            | s1 x == s2 x = check (x+1)
+            | otherwise = True
 
-set1 :: Set
-set1 = (>3)
+instance Show Set where
+    show set = "{" ++ show' (-bound) set False False False ++ "}" where
+        show' x set previous isSingle remember
+            | x == bound + 1 && previous = ".." ++ show (x-1)
+            | x == bound + 1 && (isSingle || not previous) = ""
+            | set x && remember = ", " ++ show' x set previous isSingle False
+            | not (set x) && isSingle = show' (x+1) set False False True
+            | not (set x) && not previous = show' (x+1) set False False remember
+            | not (set x) && previous = ".." ++ show (x-1) ++ show' (x+1) set False False True
+            | set x && isSingle = show' x set previous False False
+            | set x && previous = show' (x+1) set True False False
+            | set x && not previous = show x ++ show' (x+1) set True True False
+
+--Bonus : It works, just be sure to write : subSet `ϵ` mainSet
+ϵ :: Set -> Set -> Bool
+(ϵ) sub main = check (-bound) where
+    check x
+        | x == bound + 1 = True
+        | sub x = main x && check (x+1)
+        | otherwise = check (x+1)
+
+voidSet::Set
+voidSet x = False
 
 elem' :: Set -> Int -> Bool
 elem' set = set
 
-singleton' :: Int -> Set
-singleton' x = (==x) :: Set
+singleton :: Int -> Set
+singleton x = (==x)
 
-
-{-
 union :: Set -> Set -> Set
+union s1 s2 x = s1 x || s2 x
+
 intersect :: Set -> Set -> Set
+intersect s1 s2 x = s1 x && s2 x
+
 diff :: Set -> Set -> Set
-filter :: Set -> (Int -> Bool) -> Set
-all :: Set -> (Int -> Bool) -> Bool
-any :: Set -> (Int -> Bool) -> Bool
-map :: Set -> (Int -> Int) -> Set
--}
+diff main sub x = main x && not(sub x)
+
+filter' :: Set -> (Int -> Bool) -> Set
+filter' = intersect
+
+all' :: Set -> (Int -> Bool) -> Bool
+all' set predicat = intersect set predicat == predicat
+
+any' :: Set -> (Int -> Bool) -> Bool
+any' set predicat = intersect set predicat /= voidSet
+
+--Very long
+map' :: Set -> (Int -> Int) -> Set
+map' set function val = check (-bound) [] where
+    check x trueValues
+        | x == bound + 1 = val `elem` trueValues
+        | set x = check (x+1) (trueValues ++ [function x])
+        | otherwise = check (x+1) trueValues
+
+toString :: Set -> String
+toString = show
