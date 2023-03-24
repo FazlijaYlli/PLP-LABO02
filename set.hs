@@ -31,8 +31,8 @@ instance Show Set where
     show set = "{" ++ show' (-bound) set False False False ++ "}" where
         show' x set previous isSingle remember
             --End of Set
-            | x == bound + 1 && previous = ".." ++ show (x-1)
             | x == bound + 1 && (isSingle || not previous) = ""
+            | x == bound + 1 && previous = ".." ++ show (x-1)
             --Adds a separation if necessary
             | set x && remember = ", " ++ show' x set previous isSingle False
             --Not a part of the Set
