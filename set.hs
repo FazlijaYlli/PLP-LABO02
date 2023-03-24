@@ -60,13 +60,13 @@ singleton :: Int -> Set
 singleton x = validSet (==x)
 
 union :: Set -> Set -> Set
-union s1 s2 x = validSet s1 x || s2 x
+union s1 s2 x = validSet s1 x || validSet s2 x
 
 intersect :: Set -> Set -> Set
-intersect s1 s2 x = validSet s1 x && s2 x
+intersect s1 s2 x = validSet s1 x && validSet s2 x
 
 diff :: Set -> Set -> Set
-diff main sub x = validSet main x && not(sub x)
+diff main sub x = validSet main x && not(validSet sub x)
 
 filter' :: Set -> (Int -> Bool) -> Set
 filter' = intersect
