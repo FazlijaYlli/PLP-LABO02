@@ -36,13 +36,16 @@ instance Show Set where
             | set x && previous = show' (x+1) set True False False
             | set x && not previous = show x ++ show' (x+1) set True True False
 
---Bonus : It works, just be sure to write : subSet `ϵ` mainSet
-ϵ :: Set -> Set -> Bool
-(ϵ) sub main = check (-bound) where
+--Bonus : It works, just be sure to write : subSet `⊆` mainSet
+(⊆) :: Set -> Set -> Bool
+(⊆) sub main = check (-bound) where
     check x
         | x == bound + 1 = True
         | sub x = main x && check (x+1)
         | otherwise = check (x+1)
+
+ϵ :: Int -> Set -> Bool
+(ϵ) val set = elem' set val
 
 emptySet::Set
 emptySet x = False
