@@ -71,13 +71,12 @@ all' set predicat = intersect set predicat == predicat
 any' :: Set -> (Int -> Bool) -> Bool
 any' set predicat = intersect set predicat /= emptySet
 
---Very long
 map' :: Set -> (Int -> Int) -> Set
-map' set function val = check (-bound) [] where
-    check x trueValues
-        | x == bound + 1 = val `elem` trueValues
-        | set x = check (x+1) (trueValues ++ [function x])
-        | otherwise = check (x+1) trueValues
+map' set function = check (-bound) emptySet where
+    check x resultSet
+        | x == bound + 1 = resultSet
+        | set x = check (x+1) resultSet `union` singleton (function x)
+        | otherwise = check (x+1) resultSet
 
 toString :: Set -> String
 toString = show
