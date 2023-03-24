@@ -10,6 +10,7 @@ bound = 1000
 
 type Set = Int -> Bool
 
+--Function to keep a set in bounds
 validSet::Set -> Set
 validSet set x = set x && (x>=(-bound)) && (x<=bound)
 
@@ -25,16 +26,20 @@ instance Eq Set where
             | s1 x == s2 x = check (x+1)
             | otherwise = True
 
---Displays a set as an understandable and clean text
+--Displays a set to be as short and comprenhensible as possible, example : {2..5, 8, 10..17, 19}
 instance Show Set where
     show set = "{" ++ show' (-bound) set False False False ++ "}" where
         show' x set previous isSingle remember
+            --End of Set
             | x == bound + 1 && previous = ".." ++ show (x-1)
             | x == bound + 1 && (isSingle || not previous) = ""
+            --Adds a separation if necessary
             | set x && remember = ", " ++ show' x set previous isSingle False
+            --Not a part of the Set
             | not (set x) && isSingle = show' (x+1) set False False True
             | not (set x) && not previous = show' (x+1) set False False remember
             | not (set x) && previous = ".." ++ show (x-1) ++ show' (x+1) set False False True
+            --Part of the Set
             | set x && isSingle = show' x set previous False False
             | set x && previous = show' (x+1) set True False False
             | set x && not previous = show x ++ show' (x+1) set True True False
@@ -77,6 +82,7 @@ all' set predicat = intersect set predicat == predicat
 any' :: Set -> (Int -> Bool) -> Bool
 any' set predicat = intersect set predicat /= emptySet
 
+--Maps an union of singletons of function results on given set
 map' :: Set -> (Int -> Int) -> Set
 map' set function = validSet (check (-bound) emptySet) where
     check x resultSet
