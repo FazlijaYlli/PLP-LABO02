@@ -10,7 +10,7 @@ bound = 1000
 
 type Set = Int -> Bool
 
---Function to keep a set in bounds
+--Fonction pour garder un ensemble dans les limites
 validSet::Set -> Set
 validSet set x = set x && (x>=(-bound)) && (x<=bound)
 
@@ -26,25 +26,26 @@ instance Eq Set where
             | s1 x == s2 x = check (x+1)
             | otherwise = True
 
---Displays a set to be as short and comprenhensible as possible, example : {2..5, 8, 10..17, 19}
+--Affiche un ensemble pour être aussi court et compréhensible que possible, exemple : {2..5, 8, 10..17, 19}
 instance Show Set where
     show set = "{" ++ show' (-bound) set False False False ++ "}" where
         show' x set previous isSingle remember
-            --End of Set
+            --Fin de l'ensemble
             | x == bound + 1 && (isSingle || not previous) = ""
             | x == bound + 1 && previous = ".." ++ show (x-1)
-            --Adds a separation if necessary
+            --Ajouter une séparation quand nécessaire
             | set x && remember = ", " ++ show' x set previous isSingle False
-            --Not a part of the Set
+            --Pas une partie de l'ensemble
             | not (set x) && isSingle = show' (x+1) set False False True
             | not (set x) && not previous = show' (x+1) set False False remember
             | not (set x) && previous = ".." ++ show (x-1) ++ show' (x+1) set False False True
-            --Part of the Set
+            --Partie de l'ensemble
             | set x && isSingle = show' x set previous False False
             | set x && previous = show' (x+1) set True False False
             | set x && not previous = show x ++ show' (x+1) set True True False
 
---Bonus : It works, just be sure to write : subSet ⊆ mainSet, val `ϵ` set
+--Bonus : ça fonctionne, il faut juste être sûr de les utiliser comme ça : subSet ⊆ mainSet, val `ϵ` set
+
 (⊆) :: Set -> Set -> Bool
 (⊆) sub main = check (-bound) where
     check x
@@ -55,6 +56,7 @@ instance Show Set where
 ϵ :: Int -> Set -> Bool
 (ϵ) val set = elem' set val
 
+--Ensemble vide
 emptySet::Set
 emptySet x = False
 
@@ -82,7 +84,7 @@ all' set predicat = intersect set predicat == predicat
 any' :: Set -> (Int -> Bool) -> Bool
 any' set predicat = intersect set predicat /= emptySet
 
---Maps an union of singletons of function results on given set
+--Permet de créer un ensemble à partir d'une fonction exécutée sur un ensemble donné
 map' :: Set -> (Int -> Int) -> Set
 map' set function = validSet (check (-bound) emptySet) where
     check x resultSet
